@@ -1,0 +1,12 @@
+﻿  stdafx.cpp
+  app.cpp
+  main.cpp
+  SimpleController.cpp
+  SimpleSound.cpp
+  SimpleSprite.cpp
+  TextureLoader.cpp
+  GameTest.cpp
+  Generating Code...
+  GameTest.vcxproj -> C:\Users\kayay\Coding\dau\DAU-API\x64\Debug\GameTest.exe
+  C:\Users\kayay\Coding\dau\DAU-API\\GameTest\glut\bin\x64\freeglut.dll
+  1 File(s) copied
