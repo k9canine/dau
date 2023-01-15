@@ -189,7 +189,8 @@ void Render()
 	//------------------------------------------------------------------------
 	// Example Text.
 	//------------------------------------------------------------------------
-	App::Print(20, 730, "Level: 1      Score: 0");
+	std::string text = "Level: " + std::to_string(level) + "     Score: 0";
+	App::Print(20, 730, text);
 
 	if (lose)
 		App::Print(470, 384, "GAME OVER", 255.0f, 0.0f, 0.0f);
