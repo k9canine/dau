@@ -1,0 +1,5 @@
+Credits for the sprites:
+================================================================
+Meteors: https://opengameart.org/content/2d-asteroid-sprite
+Ufo and background: https://opengameart.org/content/simple-shoot-em-up-sprites-spaceship-starscape-ufo-0 
+================================================================

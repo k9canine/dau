@@ -5,21 +5,27 @@
 //------------------------------------------------------------------------
 #include <windows.h>
 #include <math.h>
+#include <vector>
+#include <algorithm>
 //------------------------------------------------------------------------
 #include "app\app.h"
+#include "levels.h"
+#include "utils.h"
+
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-// Eample data....
+// Example data....
 //------------------------------------------------------------------------
-CSimpleSprite *testSprite;
-enum
-{
-	ANIM_FORWARDS,
-	ANIM_BACKWARDS,
-	ANIM_LEFT,
-	ANIM_RIGHT,
-};
+CSimpleSprite *background = nullptr;
+CSimpleSprite *player = nullptr;
+
+int METEOR_COLUMNS = 11;
+int METEOR_ROWS = 8;
+
+std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 7 x 10)
+
+bool temp = false;
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -28,12 +34,24 @@ enum
 void Init()
 {
 	//------------------------------------------------------------------------
-	// Example Sprite Code....
-	testSprite = App::CreateSprite(".\\TestData\\ufo.bmp", 1, 6);
-	testSprite->SetPosition(500.0f, 50.0f);
+	// initialize allMeteors
+	for (int i = 0; i < METEOR_ROWS; i++)
+	{
+		allMeteors[i] = {};
+	}
+
+	//------------------------------------------------------------------------
+	// set background sprite
+	background = App::CreateSprite(".\\TestData\\background.bmp", 1, 1);
+	background->SetPosition(500.0f, 300.0f);
+	background->SetScale(1.5f);
+	//------------------------------------------------------------------------
+
+	player = App::CreateSprite(".\\TestData\\ufo.bmp", 1, 6);
+	player->SetPosition(500.0f, 50.0f);
 	float speed = 3.0f / 15.0f;
-	testSprite->CreateAnimation(ANIM_BACKWARDS, speed, {1, 2, 3, 4, 5});
-	testSprite->SetScale(2.0f);
+	player->CreateAnimation(ANIMATE, speed, {1, 2, 3, 4, 5});
+	player->SetScale(2.0f);
 	//------------------------------------------------------------------------
 }
 
@@ -43,46 +61,86 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	testSprite->SetAnimation(ANIM_BACKWARDS);
-	//------------------------------------------------------------------------
-	// Example Sprite Code....
-	testSprite->Update(deltaTime);
+	if (temp == false)
+	{
+		temp = true;
+
+		// set the meteors and make them appear, then abstract to a new function
+		// return value: another array to put back into the other array
+
+		allMeteors.emplace_back(generateMeteors(level1));
+	}
+
+	player->SetAnimation(ANIMATE);
+	player->Update(deltaTime);
+
+	for (auto arr : allMeteors)
+	{
+		for (CSimpleSprite *meteor : arr)
+		{
+			if (meteor)
+			{
+				meteor->SetAnimation(ANIMATE);
+				meteor->Update(deltaTime);
+			}
+		}
+	}
+
+	// =====================================================
 	if (App::GetController().GetLeftThumbStickX() > 0.5f)
 	{
-		testSprite->SetAnimation(ANIM_RIGHT);
 		float x, y;
-		testSprite->GetPosition(x, y);
-		x += 1.0f;
-		testSprite->SetPosition(x, y);
+		player->GetPosition(x, y);
+
+		// bounds checking
+		if (!outOfBounds(x + 1.0f, y))
+		{
+			x += 1.0f;
+			player->SetPosition(x, y);
+			// if (gameOver(player, &allMeteors))
+			// 	exit(0);
+		}
 	}
 	if (App::GetController().GetLeftThumbStickX() < -0.5f)
 	{
-		testSprite->SetAnimation(ANIM_LEFT);
 		float x, y;
-		testSprite->GetPosition(x, y);
-		x -= 1.0f;
+		player->GetPosition(x, y);
 
-		// if out of bounds (x - 1.0f, y)
-		// 	do nothing
-		// else x -= 1.0f
-		testSprite->SetPosition(x, y);
+		if (!outOfBounds(x - 1.0f, y))
+		{
+			x -= 1.0f;
+			player->SetPosition(x, y);
+			// if (gameOver(player, &allMeteors))
+			// 	exit(0);
+		}
 	}
 	if (App::GetController().GetLeftThumbStickY() < -0.5f)
 	{
-		testSprite->SetAnimation(ANIM_FORWARDS);
 		float x, y;
-		testSprite->GetPosition(x, y);
-		y += 1.0f;
-		testSprite->SetPosition(x, y);
+		player->GetPosition(x, y);
+
+		if (!outOfBounds(x, y + 1.0f))
+		{
+			y += 1.0f;
+			player->SetPosition(x, y);
+			// if (gameOver(player, &allMeteors))
+			// 	exit(0);
+		}
 	}
 	if (App::GetController().GetLeftThumbStickY() > 0.5f)
 	{
-		testSprite->SetAnimation(ANIM_BACKWARDS);
 		float x, y;
-		testSprite->GetPosition(x, y);
-		y -= 1.0f;
-		testSprite->SetPosition(x, y);
+		player->GetPosition(x, y);
+
+		if (!outOfBounds(x, y - 1.0f))
+		{
+			y -= 1.0f;
+			player->SetPosition(x, y);
+			// if (gameOver(player, &allMeteors))
+			// 	exit(0);
+		}
 	}
+
 	//------------------------------------------------------------------------
 	// Sample Sound. - USE FOR SHOOTING ENEMIES
 	//------------------------------------------------------------------------
@@ -98,34 +156,23 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {
-	//------------------------------------------------------------------------
-	// Example Sprite Code....
-	testSprite->Draw();
+	background->Draw();
+	player->Draw();
+
+	for (auto arr : allMeteors)
+	{
+		for (CSimpleSprite *meteor : arr)
+		{
+			if (meteor)
+				meteor->Draw();
+		}
+	}
 	//------------------------------------------------------------------------
 
 	//------------------------------------------------------------------------
 	// Example Text.
 	//------------------------------------------------------------------------
 	App::Print(20, 730, "Level: 1     Score: 0");
-
-	//------------------------------------------------------------------------
-	// Example Line Drawing.
-	//------------------------------------------------------------------------
-	// static float a = 0.0f;
-	// float r = 1.0f;
-	// float g = 1.0f;
-	// float b = 1.0f;
-	// a += 0.1f;
-	// // for (int i = 0; i < 20; i++)
-	// // {
-	// float sx = 200 + sinf(a + i * 0.1f) * 60.0f;
-	// float sy = 200 + cosf(a + i * 0.1f) * 60.0f;
-	// float ex = 700 - sinf(a + i * 0.1f) * 60.0f;
-	// float ey = 700 - cosf(a + i * 0.1f) * 60.0f;
-	// g = (float)i / 20.0f;
-	// b = (float)i / 20.0f;
-	// App::DrawLine(sx, sy, ex, ey, r, g, b);
-	// // }
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
@@ -135,6 +182,15 @@ void Shutdown()
 {
 	//------------------------------------------------------------------------
 	// Example Sprite Code....
-	delete testSprite;
+	delete player;
+	delete background;
+
+	for (auto arr : allMeteors)
+	{
+		for (CSimpleSprite *meteor : arr)
+		{
+			delete meteor;
+		}
+	}
 	//------------------------------------------------------------------------
 }
