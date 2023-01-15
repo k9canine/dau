@@ -8,7 +8,7 @@
 #include "utils.h"
 
 // generates a row of meteors (an array of pointers to meteor sprites) using the user's level
-std::vector<CSimpleSprite *> generateMeteors(float level)
+std::vector<CSimpleSprite *> generateMeteors(int level)
 {
     std::vector<int> array = generateArray(level);
     // std::vector<int> array = {1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4};
@@ -131,7 +131,7 @@ bool outOfBounds(float x, float y)
 }
 
 // this function shifts all of the meteors down and removes the bottom row of meteors, then adds a new row of generated meteors
-void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, float level)
+void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, int level)
 {
     // deletes the meteors in the first row before deleting the row
     for (auto meteor : allMeteors.front())

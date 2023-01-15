@@ -3,11 +3,11 @@
 
 #include <vector>
 
-extern float level1;
-extern float level2;
-extern float level3;
-extern float level4;
+extern int level1;
+extern int level2;
+extern int level3;
+extern int level4;
 
-std::vector<int> generateArray(float level);
+std::vector<int> generateArray(int level);
 
 #endif

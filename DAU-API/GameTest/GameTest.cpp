@@ -28,7 +28,7 @@ std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 8 x
 
 bool lose = false;
 bool lastRender = true;
-float level = level1;
+int level = level1;
 
 float totalTime = 0;			  // total time elapsed
 float timeLastUpdated = 0;		  // when the game was last updated
@@ -72,11 +72,11 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	if (lose && lastRender) // makes the visuals look a bit choppy, might remove
-	{
-		lastRender = false;
-		updateMeteors(allMeteors, level);
-	}
+	// if (lose && lastRender) // makes the visuals look a bit choppy, might remove
+	// {
+	// 	lastRender = false;
+	// 	updateMeteors(allMeteors, level);
+	// }
 	if (lose == false)
 	{
 		totalTime += deltaTime / UPDATE_FREQUENCY;

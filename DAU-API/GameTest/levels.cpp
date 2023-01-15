@@ -8,13 +8,46 @@
 #include <cstdlib>
 // stores constants for the probability of a meteor for any given space
 
-float level1 = 0.33333f;
-float level2 = 0.4f;
-float level3 = 0.5f;
-float level4 = 0.66667f;
+int level1 = 1;
+int level2 = 2;
+int level3 = 3;
+int level4 = 4;
 
-std::vector<int> generateArray(float level)
+float level1value = 0.33333f;
+float level2value = 0.4f;
+float level3value = 0.5f;
+float level4value = 0.66667f;
+
+std::vector<int> generateArray(int levelNum)
 {
+    float level;
+    switch (levelNum)
+    {
+    case 1:
+    {
+        level = level1value;
+        break;
+    }
+    case 2:
+    {
+        level = level2value;
+        break;
+    }
+    case 3:
+    {
+        level = level3value;
+        break;
+    }
+    case 4:
+    {
+        level = level4value;
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
     std::vector<int> array;
     srand(time(0));
 
