@@ -7,6 +7,7 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
+#include <string>
 //------------------------------------------------------------------------
 #include "app\app.h"
 #include "levels.h"
@@ -25,8 +26,14 @@ int METEOR_ROWS = 8;
 
 std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 8 x 11)
 
-bool temp = false;
 bool lose = false;
+bool lastRender = true;
+float level = level1;
+
+float totalTime = 0;			  // total time elapsed
+float timeLastUpdated = 0;		  // when the game was last updated
+float UPDATE_FREQUENCY = 4000.0f; // (in milliseconds) how often to update the meteors falling
+
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -55,7 +62,7 @@ void Init()
 	player->SetPosition(500.0f, 50.0f);
 	float speed = 3.0f / 15.0f;
 	player->CreateAnimation(ANIMATE, speed, {1, 2, 3, 4, 5});
-	player->SetScale(2.0f);
+	player->SetScale(1.8f);
 	//------------------------------------------------------------------------
 }
 
@@ -65,29 +72,26 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	if (temp == false)
+	if (lose && lastRender) // makes the visuals look a bit choppy, might remove
 	{
-		temp = true;
+		lastRender = false;
+		updateMeteors(allMeteors, level);
+	}
+	if (lose == false)
+	{
+		totalTime += deltaTime / UPDATE_FREQUENCY;
 
-		// return value: another array to put back into the other array
-
-		// erase first row of meteors before deleting them
-		for (auto meteor : allMeteors.front())
+		if (totalTime > timeLastUpdated)
 		{
-			delete meteor;
+			timeLastUpdated += 1.0f;
+			updateMeteors(allMeteors, level);
+			gameOver(player, allMeteors, lose);
 		}
-		allMeteors.erase(allMeteors.begin());
-
-		// every x seconds:
-		// update/set the positions of all of the meteors after you delete the bottom row, based on their position in the 2D array
-		// then add the new row to the top
-
-		allMeteors.emplace_back(generateMeteors(level1)); // option COULD GENERATE EMPTY ROWS IN BETWEEN
 	}
 
 	for (auto arr : allMeteors)
 	{
-		for (CSimpleSprite *meteor : arr)
+		for (auto meteor : arr)
 		{
 			if (meteor)
 			{
@@ -113,8 +117,7 @@ void Update(float deltaTime)
 			{
 				x += 1.0f;
 				player->SetPosition(x, y);
-				if (gameOver(player, &allMeteors))
-					lose = true;
+				gameOver(player, allMeteors, lose);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickX() < -0.5f)
@@ -126,8 +129,7 @@ void Update(float deltaTime)
 			{
 				x -= 1.0f;
 				player->SetPosition(x, y);
-				if (gameOver(player, &allMeteors))
-					lose = true;
+				gameOver(player, allMeteors, lose);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickY() < -0.5f)
@@ -139,8 +141,7 @@ void Update(float deltaTime)
 			{
 				y += 1.0f;
 				player->SetPosition(x, y);
-				if (gameOver(player, &allMeteors))
-					lose = true;
+				gameOver(player, allMeteors, lose);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickY() > 0.5f)
@@ -152,8 +153,7 @@ void Update(float deltaTime)
 			{
 				y -= 1.0f;
 				player->SetPosition(x, y);
-				if (gameOver(player, &allMeteors))
-					lose = true;
+				gameOver(player, allMeteors, lose);
 			}
 		}
 	}
@@ -178,7 +178,7 @@ void Render()
 
 	for (auto arr : allMeteors)
 	{
-		for (CSimpleSprite *meteor : arr)
+		for (auto *meteor : arr)
 		{
 			if (meteor)
 				meteor->Draw();
@@ -189,10 +189,10 @@ void Render()
 	//------------------------------------------------------------------------
 	// Example Text.
 	//------------------------------------------------------------------------
-	App::Print(20, 730, "Level: 1     Score: 0");
+	App::Print(20, 730, "Level: 1      Score: 0");
 
 	if (lose)
-		App::Print(470, 384, "GAME OVER", 255);
+		App::Print(470, 384, "GAME OVER", 255.0f, 0.0f, 0.0f);
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
@@ -207,7 +207,7 @@ void Shutdown()
 
 	for (auto arr : allMeteors)
 	{
-		for (CSimpleSprite *meteor : arr)
+		for (auto *meteor : arr)
 		{
 			delete meteor;
 		}

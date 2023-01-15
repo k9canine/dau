@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include "app/app.h"
+#include <vector>
 
 extern int METEOR_COLUMNS, METEOR_ROWS;
 enum
@@ -10,7 +11,8 @@ enum
 };
 
 std::vector<CSimpleSprite *> generateMeteors(float level);
-bool gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> *allMeteors);
+void gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors, bool &lose);
 bool outOfBounds(float x, float y);
+void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, float level);
 
 #endif

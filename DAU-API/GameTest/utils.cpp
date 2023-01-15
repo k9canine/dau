@@ -6,14 +6,12 @@
 #include "App/app.h"
 #include "levels.h"
 #include "utils.h"
-// set the meteors and make them appear, then abstract to a new function
-// return value: another array to put back into the other array
 
 // generates a row of meteors (an array of pointers to meteor sprites) using the user's level
 std::vector<CSimpleSprite *> generateMeteors(float level)
 {
-    // std::vector<int> array = generateArray(level);
-    std::vector<int> array = {1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4};
+    std::vector<int> array = generateArray(level);
+    // std::vector<int> array = {1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4};
     std::vector<CSimpleSprite *> meteorArray;
     CSimpleSprite *newSprite = nullptr;
     float speed1 = 3.0f / 15.0f;
@@ -73,12 +71,15 @@ struct Coordinates
 };
 
 // checks if the current position of the player is in one of the meteor occupied positions
-bool gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> *allMeteors)
+//   sets lose to true if game over condition satsified
+void gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors, bool &lose)
 {
+    int modifier = 30; // this makes it so that our hitbox is slightly smaller and its easier to move through the obstacles
+
     float x, y;
     Coordinates upperLeft, upperRight, lowerLeft, lowerRight; // corners of the sprite
-    int playerWidth = player->GetWidth() * player->GetScale();
-    int playerHeight = player->GetHeight() * player->GetScale();
+    int playerWidth = player->GetWidth() * player->GetScale() - modifier;
+    int playerHeight = player->GetHeight() * player->GetScale() - modifier;
 
     // get position
     player->GetPosition(x, y);
@@ -99,6 +100,7 @@ bool gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> *
     std::vector<Coordinates> corners = {upperLeft, upperRight, lowerLeft, lowerRight};
 
     // find which box the corners are in
+    // check if that spot in the meteor array is nullptr or occupied
     int xIndex, yIndex;
 
     for (int i = 0; i < corners.size(); i++)
@@ -106,15 +108,11 @@ bool gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> *
         xIndex = floor(abs(corners[i].x - 15) / 90);
         yIndex = floor(abs(corners[i].y - 10) / 90);
 
-        if ((*allMeteors)[yIndex][xIndex] != nullptr)
+        if (allMeteors[yIndex][xIndex] != nullptr)
         {
-            return true;
+            lose = true;
         }
     }
-
-    // check if that spot in the meteor array is nullptr or occupied
-
-    return false;
 }
 
 // outOfBounds: takes an x and y coordinate and returns if it is a valid position on the screen
@@ -130,4 +128,32 @@ bool outOfBounds(float x, float y)
     }
 
     return true;
+}
+
+// this function shifts all of the meteors down and removes the bottom row of meteors, then adds a new row of generated meteors
+void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, float level)
+{
+    // deletes the meteors in the first row before deleting the row
+    for (auto meteor : allMeteors.front())
+    {
+        delete meteor;
+    }
+    allMeteors.erase(allMeteors.begin());
+
+    // updates the original positions
+    for (auto meteorRow : allMeteors)
+    {
+        for (auto meteor : meteorRow)
+        {
+            if (meteor)
+            {
+                float x, y;
+                meteor->GetPosition(x, y);
+                meteor->SetPosition(x, y - 90);
+            }
+        }
+    }
+
+    // adds to the beginning
+    allMeteors.emplace_back(generateMeteors(level)); // option COULD GENERATE EMPTY ROWS IN BETWEEN
 }
