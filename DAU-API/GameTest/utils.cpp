@@ -12,8 +12,8 @@
 // generates a row of meteors (an array of pointers to meteor sprites) using the user's level
 std::vector<CSimpleSprite *> generateMeteors(float level)
 {
-    std::vector<int> array = generateArray(level4);
-    // std::vector<int> array = {1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4};
+    // std::vector<int> array = generateArray(level);
+    std::vector<int> array = {1, 2, 3, 4, 2, 3, 4, 1, 2, 3, 4};
     std::vector<CSimpleSprite *> meteorArray;
     CSimpleSprite *newSprite = nullptr;
     float speed1 = 3.0f / 15.0f;
@@ -61,7 +61,7 @@ std::vector<CSimpleSprite *> generateMeteors(float level)
             break;
         }
 
-        newSprite->SetScale(1.25f);
+        newSprite->SetScale(1.4f);
     }
 
     return meteorArray;
@@ -103,8 +103,8 @@ bool gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> *
 
     for (int i = 0; i < corners.size(); i++)
     {
-        xIndex = floor(abs(corners[i].x - 55) / 90);
-        yIndex = floor(abs(corners[i].y - 40) / 90);
+        xIndex = floor(abs(corners[i].x - 15) / 90);
+        yIndex = floor(abs(corners[i].y - 10) / 90);
 
         if ((*allMeteors)[yIndex][xIndex] != nullptr)
         {

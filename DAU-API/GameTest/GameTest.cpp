@@ -23,9 +23,10 @@ CSimpleSprite *player = nullptr;
 int METEOR_COLUMNS = 11;
 int METEOR_ROWS = 8;
 
-std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 7 x 10)
+std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 8 x 11)
 
 bool temp = false;
+bool lose = false;
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -37,7 +38,10 @@ void Init()
 	// initialize allMeteors
 	for (int i = 0; i < METEOR_ROWS; i++)
 	{
-		allMeteors[i] = {};
+		for (int j = 0; j < METEOR_COLUMNS; j++)
+		{
+			allMeteors[i].emplace_back(nullptr);
+		}
 	}
 
 	//------------------------------------------------------------------------
@@ -65,14 +69,21 @@ void Update(float deltaTime)
 	{
 		temp = true;
 
-		// set the meteors and make them appear, then abstract to a new function
 		// return value: another array to put back into the other array
 
-		allMeteors.emplace_back(generateMeteors(level1));
-	}
+		// erase first row of meteors before deleting them
+		for (auto meteor : allMeteors.front())
+		{
+			delete meteor;
+		}
+		allMeteors.erase(allMeteors.begin());
 
-	player->SetAnimation(ANIMATE);
-	player->Update(deltaTime);
+		// every x seconds:
+		// update/set the positions of all of the meteors after you delete the bottom row, based on their position in the 2D array
+		// then add the new row to the top
+
+		allMeteors.emplace_back(generateMeteors(level1)); // option COULD GENERATE EMPTY ROWS IN BETWEEN
+	}
 
 	for (auto arr : allMeteors)
 	{
@@ -86,58 +97,64 @@ void Update(float deltaTime)
 		}
 	}
 
-	// =====================================================
-	if (App::GetController().GetLeftThumbStickX() > 0.5f)
+	if (lose == false)
 	{
-		float x, y;
-		player->GetPosition(x, y);
+		player->SetAnimation(ANIMATE);
+		player->Update(deltaTime);
 
-		// bounds checking
-		if (!outOfBounds(x + 1.0f, y))
+		// =====================================================
+		if (App::GetController().GetLeftThumbStickX() > 0.5f)
 		{
-			x += 1.0f;
-			player->SetPosition(x, y);
-			// if (gameOver(player, &allMeteors))
-			// 	exit(0);
+			float x, y;
+			player->GetPosition(x, y);
+
+			// bounds checking
+			if (!outOfBounds(x + 1.0f, y))
+			{
+				x += 1.0f;
+				player->SetPosition(x, y);
+				if (gameOver(player, &allMeteors))
+					lose = true;
+			}
 		}
-	}
-	if (App::GetController().GetLeftThumbStickX() < -0.5f)
-	{
-		float x, y;
-		player->GetPosition(x, y);
-
-		if (!outOfBounds(x - 1.0f, y))
+		if (App::GetController().GetLeftThumbStickX() < -0.5f)
 		{
-			x -= 1.0f;
-			player->SetPosition(x, y);
-			// if (gameOver(player, &allMeteors))
-			// 	exit(0);
+			float x, y;
+			player->GetPosition(x, y);
+
+			if (!outOfBounds(x - 1.0f, y))
+			{
+				x -= 1.0f;
+				player->SetPosition(x, y);
+				if (gameOver(player, &allMeteors))
+					lose = true;
+			}
 		}
-	}
-	if (App::GetController().GetLeftThumbStickY() < -0.5f)
-	{
-		float x, y;
-		player->GetPosition(x, y);
-
-		if (!outOfBounds(x, y + 1.0f))
+		if (App::GetController().GetLeftThumbStickY() < -0.5f)
 		{
-			y += 1.0f;
-			player->SetPosition(x, y);
-			// if (gameOver(player, &allMeteors))
-			// 	exit(0);
+			float x, y;
+			player->GetPosition(x, y);
+
+			if (!outOfBounds(x, y + 1.0f))
+			{
+				y += 1.0f;
+				player->SetPosition(x, y);
+				if (gameOver(player, &allMeteors))
+					lose = true;
+			}
 		}
-	}
-	if (App::GetController().GetLeftThumbStickY() > 0.5f)
-	{
-		float x, y;
-		player->GetPosition(x, y);
-
-		if (!outOfBounds(x, y - 1.0f))
+		if (App::GetController().GetLeftThumbStickY() > 0.5f)
 		{
-			y -= 1.0f;
-			player->SetPosition(x, y);
-			// if (gameOver(player, &allMeteors))
-			// 	exit(0);
+			float x, y;
+			player->GetPosition(x, y);
+
+			if (!outOfBounds(x, y - 1.0f))
+			{
+				y -= 1.0f;
+				player->SetPosition(x, y);
+				if (gameOver(player, &allMeteors))
+					lose = true;
+			}
 		}
 	}
 
@@ -173,6 +190,9 @@ void Render()
 	// Example Text.
 	//------------------------------------------------------------------------
 	App::Print(20, 730, "Level: 1     Score: 0");
+
+	if (lose)
+		App::Print(470, 384, "GAME OVER", 255);
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
