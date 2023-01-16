@@ -152,3 +152,23 @@ void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, int le
     // adds to the beginning
     allMeteors.emplace_back(generateMeteors(level)); // option COULD GENERATE EMPTY ROWS IN BETWEEN
 }
+
+void shoot(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors)
+{
+    float x, y;
+    player->GetPosition(x, y);
+
+    int xIndex = floor((x - 15) / 90);
+    int yIndex = floor((y - 10) / 90);
+
+    for (int i = yIndex + 1; i < METEOR_ROWS; i++)
+    {
+        auto meteor = allMeteors[i][xIndex];
+        if (meteor != nullptr)
+        {
+            delete meteor;
+            meteor = nullptr;
+            break;
+        }
+    }
+}

@@ -180,6 +180,15 @@ void Update(float deltaTime)
 				checkGetGem(gem, gemX, gemY, player, score, GEM_SCORE);
 			}
 		}
+
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
+		{
+			shoot(player, allMeteors);
+			App::PlaySound(".\\TestData\\Test.wav");
+		}
+
+		// if shoot key is pressed
+		// send the player, meteor array to the shoot function (if no meteor, do nothing)
 	}
 
 	//------------------------------------------------------------------------

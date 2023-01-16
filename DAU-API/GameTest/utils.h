@@ -18,5 +18,6 @@ struct Coordinates
 {
     int x, y;
 };
+void shoot(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors);
 
 #endif
