@@ -12,6 +12,7 @@
 #include "app\app.h"
 #include "levels.h"
 #include "utils.h"
+#include "gem.h"
 
 //------------------------------------------------------------------------
 
@@ -20,6 +21,7 @@
 //------------------------------------------------------------------------
 CSimpleSprite *background = nullptr;
 CSimpleSprite *player = nullptr;
+CSimpleSprite *gem = nullptr;
 
 int METEOR_COLUMNS = 11;
 int METEOR_ROWS = 8;
@@ -29,6 +31,8 @@ std::vector<std::vector<CSimpleSprite *>> allMeteors(METEOR_ROWS); // (size: 8 x
 bool lose = false;
 bool lastRender = true;
 int level = level1;
+float score = 0;
+float SCORE_SPEED = 1000.0f; // decreasing this value gives more score per second survived
 
 float totalTime = 0;			  // total time elapsed
 float timeLastUpdated = 0;		  // when the game was last updated
@@ -64,6 +68,10 @@ void Init()
 	player->CreateAnimation(ANIMATE, speed, {1, 2, 3, 4, 5});
 	player->SetScale(1.8f);
 	//------------------------------------------------------------------------
+	gem = App::CreateSprite(".\\TestData\\gem.bmp", 7, 6);
+	setGem(gem);
+	gem->CreateAnimation(ANIMATE, speed, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
+	gem->SetScale(1.8f);
 }
 
 //------------------------------------------------------------------------
@@ -79,6 +87,7 @@ void Update(float deltaTime)
 	// }
 	if (lose == false)
 	{
+		score += deltaTime / 1000.0f;
 		totalTime += deltaTime / UPDATE_FREQUENCY;
 
 		if (totalTime > timeLastUpdated)
@@ -103,6 +112,11 @@ void Update(float deltaTime)
 
 	if (lose == false)
 	{
+		if (gem)
+		{
+			gem->SetAnimation(ANIMATE);
+			gem->Update(deltaTime);
+		}
 		player->SetAnimation(ANIMATE);
 		player->Update(deltaTime);
 
@@ -175,6 +189,8 @@ void Render()
 {
 	background->Draw();
 	player->Draw();
+	if (gem)
+		gem->Draw();
 
 	for (auto arr : allMeteors)
 	{
@@ -189,7 +205,7 @@ void Render()
 	//------------------------------------------------------------------------
 	// Example Text.
 	//------------------------------------------------------------------------
-	std::string text = "Level: " + std::to_string(level) + "     Score: 0";
+	std::string text = "Level: " + std::to_string(level) + "     Score: " + std::to_string(score);
 	App::Print(20, 730, text);
 
 	if (lose)
@@ -205,6 +221,7 @@ void Shutdown()
 	// Example Sprite Code....
 	delete player;
 	delete background;
+	delete gem;
 
 	for (auto arr : allMeteors)
 	{
@@ -213,5 +230,6 @@ void Shutdown()
 			delete meteor;
 		}
 	}
+
 	//------------------------------------------------------------------------
 }
