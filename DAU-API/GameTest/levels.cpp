@@ -49,7 +49,7 @@ std::vector<int> generateArray(int levelNum)
     }
     }
     std::vector<int> array;
-    srand(time(0));
+    srand(time(NULL));
 
     float indivMeteorProb = level / 4;
     float noMeteorProb = 1 - level;

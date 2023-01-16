@@ -25,9 +25,13 @@ std::vector<CSimpleSprite *> generateMeteors(int level)
         switch (array[i])
         {
         case (0):
+        {
             meteorArray.emplace_back(nullptr);
             continue;
+        }
+
         case (1):
+        {
             // generate a meteor sprite and add that to the array
             newSprite = App::CreateSprite(".\\TestData\\meteors2.bmp", 16, 2);
             newSprite->SetPosition(90.0f * i + 55.0f, 90 * (METEOR_ROWS - 1) + 40);
@@ -35,29 +39,38 @@ std::vector<CSimpleSprite *> generateMeteors(int level)
 
             meteorArray.emplace_back(newSprite);
             break;
+        }
         case (2):
+        {
             newSprite = App::CreateSprite(".\\TestData\\meteors2.bmp", 16, 2);
             newSprite->SetPosition(90.0f * i + 55.0f, 90 * (METEOR_ROWS - 1) + 40);
             newSprite->CreateAnimation(ANIMATE, speed2, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1, 2, 3, 4, 5, 6});
 
             meteorArray.emplace_back(newSprite);
             break;
+        }
         case (3):
+        {
             newSprite = App::CreateSprite(".\\TestData\\meteors2.bmp", 16, 2);
             newSprite->SetPosition(90.0f * i + 55.0f, 90 * (METEOR_ROWS - 1) + 40);
             newSprite->CreateAnimation(ANIMATE, speed3, {14, 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13});
 
             meteorArray.emplace_back(newSprite);
             break;
+        }
         case (4):
+        {
             newSprite = App::CreateSprite(".\\TestData\\meteors2.bmp", 16, 2);
             newSprite->SetPosition(90.0f * i + 55.0f, 90 * (METEOR_ROWS - 1) + 40);
             newSprite->CreateAnimation(ANIMATE, speed4, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
 
             meteorArray.emplace_back(newSprite);
             break;
+        }
         default:
+        {
             break;
+        }
         }
 
         newSprite->SetScale(1.4f);

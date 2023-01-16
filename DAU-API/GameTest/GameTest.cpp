@@ -77,7 +77,7 @@ void Init()
 	gem = App::CreateSprite(".\\TestData\\gem.bmp", 7, 6);
 	setGem(gem, gemX, gemY);
 	gem->CreateAnimation(ANIMATE, speed, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-	gem->SetScale(1.8f);
+	gem->SetScale(2.9f);
 }
 
 //------------------------------------------------------------------------
@@ -89,13 +89,16 @@ void Update(float deltaTime)
 	if (score > 3000)
 	{
 		level = 4;
+		UPDATE_FREQUENCY = 2500.0f;
 	}
 	else if (score > 1000)
 	{
 		level = 3;
+		UPDATE_FREQUENCY = 3000.0f;
 	}
 	else if (score > 200)
 	{
+		UPDATE_FREQUENCY = 3500.0f;
 		level = 2;
 	}
 	// if (lose && lastRender) // makes the visuals look a bit choppy, might remove
