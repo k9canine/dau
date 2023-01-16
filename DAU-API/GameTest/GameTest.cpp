@@ -13,6 +13,7 @@
 #include "levels.h"
 #include "utils.h"
 #include "gem.h"
+#include "meteors.h"
 
 //------------------------------------------------------------------------
 
