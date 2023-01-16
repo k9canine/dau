@@ -167,8 +167,21 @@ void shoot(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &all
         if (meteor != nullptr)
         {
             delete meteor;
-            meteor = nullptr;
+            allMeteors[i][xIndex] = nullptr;
             break;
         }
     }
+}
+
+// this is not in use because there are some bugs
+CSimpleSprite *generateBullet(CSimpleSprite *player)
+{
+    float x, y;
+    player->GetPosition(x, y);
+
+    CSimpleSprite *bullet = App::CreateSprite(".\\TestData\\bullet.bmp", 1, 1);
+    bullet->SetPosition(x, y);
+    bullet->SetScale(0.1f);
+
+    return bullet;
 }

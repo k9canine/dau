@@ -22,6 +22,7 @@
 CSimpleSprite *background = nullptr;
 CSimpleSprite *player = nullptr;
 CSimpleSprite *gem = nullptr;
+// CSimpleSprite *bullet = nullptr;
 
 int METEOR_COLUMNS = 11;
 int METEOR_ROWS = 8;
@@ -41,6 +42,7 @@ float lastTimeShot = 0;
 
 int gemX, gemY;				// where gemX and gemY are the coordinates of the gem in the 2D meteor array
 int GEM_SCORE = 50 * level; // score for obtaining a gem
+
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -83,6 +85,18 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
+	if (score > 3000)
+	{
+		level = 4;
+	}
+	else if (score > 1000)
+	{
+		level = 3;
+	}
+	else if (score > 200)
+	{
+		level = 2;
+	}
 	// if (lose && lastRender) // makes the visuals look a bit choppy, might remove
 	// {
 	// 	lastRender = false;
@@ -120,6 +134,17 @@ void Update(float deltaTime)
 			gem->SetAnimation(ANIMATE);
 			gem->Update(deltaTime);
 		}
+
+		// =============== didn't get around to finishing this ===============
+		// this is supposed to make the bullet shoot across the screen
+		// ===================================================================
+		// if (bullet)
+		// {
+		// 	float bulletX, bulletY;
+		// 	bullet->GetPosition(bulletX, bulletY);
+		// 	bullet->SetPosition(bulletX, bulletY + 1);
+		// }
+
 		player->SetAnimation(ANIMATE);
 		player->Update(deltaTime);
 
@@ -190,6 +215,9 @@ void Update(float deltaTime)
 				lastTimeShot = totalTime;
 				shoot(player, allMeteors);
 				App::PlaySound(".\\TestData\\Test.wav");
+
+				// delete bullet;
+				// bullet = generateBullet(player);
 			}
 			else
 			{
@@ -220,6 +248,8 @@ void Render()
 	player->Draw();
 	if (gem)
 		gem->Draw();
+	// if (bullet)
+	// 	bullet->Draw();
 
 	for (auto arr : allMeteors)
 	{
@@ -234,6 +264,7 @@ void Render()
 	//------------------------------------------------------------------------
 	// Example Text.
 	//------------------------------------------------------------------------
+	// std::string text = "Level: " + std::to_string(level) + "     Score: " + std::to_string(score);
 	std::string text = "Level: " + std::to_string(level) + "     Score: " + std::to_string(score);
 	App::Print(20, 730, text);
 
@@ -251,6 +282,7 @@ void Shutdown()
 	delete player;
 	delete background;
 	delete gem;
+	// delete bullet;
 
 	for (auto arr : allMeteors)
 	{

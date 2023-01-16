@@ -13,10 +13,10 @@ int level2 = 2;
 int level3 = 3;
 int level4 = 4;
 
-float level1value = 0.33333f;
-float level2value = 0.4f;
-float level3value = 0.5f;
-float level4value = 0.66667f;
+float level1value = 0.2f;
+float level2value = 0.333f;
+float level3value = 0.4f;
+float level4value = 0.5f;
 
 std::vector<int> generateArray(int levelNum)
 {
