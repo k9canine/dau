@@ -38,6 +38,8 @@ float totalTime = 0;			  // total time elapsed
 float timeLastUpdated = 0;		  // when the game was last updated
 float UPDATE_FREQUENCY = 4000.0f; // (in milliseconds) how often to update the meteors falling
 
+int gemX, gemY;				// where gemX and gemY are the coordinates of the gem in the 2D meteor array
+int GEM_SCORE = 50 * level; // score for obtaining a gem
 //------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -69,7 +71,7 @@ void Init()
 	player->SetScale(1.8f);
 	//------------------------------------------------------------------------
 	gem = App::CreateSprite(".\\TestData\\gem.bmp", 7, 6);
-	setGem(gem);
+	setGem(gem, gemX, gemY);
 	gem->CreateAnimation(ANIMATE, speed, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
 	gem->SetScale(1.8f);
 }
@@ -132,6 +134,8 @@ void Update(float deltaTime)
 				x += 1.0f;
 				player->SetPosition(x, y);
 				gameOver(player, allMeteors, lose);
+
+				checkGetGem(gem, gemX, gemY, player, score, GEM_SCORE);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickX() < -0.5f)
@@ -144,6 +148,8 @@ void Update(float deltaTime)
 				x -= 1.0f;
 				player->SetPosition(x, y);
 				gameOver(player, allMeteors, lose);
+
+				checkGetGem(gem, gemX, gemY, player, score, GEM_SCORE);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickY() < -0.5f)
@@ -156,6 +162,8 @@ void Update(float deltaTime)
 				y += 1.0f;
 				player->SetPosition(x, y);
 				gameOver(player, allMeteors, lose);
+
+				checkGetGem(gem, gemX, gemY, player, score, GEM_SCORE);
 			}
 		}
 		if (App::GetController().GetLeftThumbStickY() > 0.5f)
@@ -168,6 +176,8 @@ void Update(float deltaTime)
 				y -= 1.0f;
 				player->SetPosition(x, y);
 				gameOver(player, allMeteors, lose);
+
+				checkGetGem(gem, gemX, gemY, player, score, GEM_SCORE);
 			}
 		}
 	}

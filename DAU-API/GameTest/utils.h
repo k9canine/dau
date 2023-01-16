@@ -14,5 +14,9 @@ std::vector<CSimpleSprite *> generateMeteors(int level);
 void gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors, bool &lose);
 bool outOfBounds(float x, float y);
 void updateMeteors(std::vector<std::vector<CSimpleSprite *>> &allMeteors, int level);
+struct Coordinates
+{
+    int x, y;
+};
 
 #endif

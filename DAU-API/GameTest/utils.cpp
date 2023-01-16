@@ -65,16 +65,11 @@ std::vector<CSimpleSprite *> generateMeteors(int level)
     return meteorArray;
 }
 
-struct Coordinates
-{
-    int x, y;
-};
-
 // checks if the current position of the player is in one of the meteor occupied positions
 //   sets lose to true if game over condition satsified
 void gameOver(CSimpleSprite *player, std::vector<std::vector<CSimpleSprite *>> &allMeteors, bool &lose)
 {
-    int modifier = 30; // this makes it so that our hitbox is slightly smaller and its easier to move through the obstacles
+    int modifier = 40; // this makes it so that our hitbox is slightly smaller and its easier to move through the obstacles
 
     float x, y;
     Coordinates upperLeft, upperRight, lowerLeft, lowerRight; // corners of the sprite
