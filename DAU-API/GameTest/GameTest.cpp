@@ -37,6 +37,7 @@ float SCORE_SPEED = 1000.0f; // decreasing this value gives more score per secon
 float totalTime = 0;			  // total time elapsed
 float timeLastUpdated = 0;		  // when the game was last updated
 float UPDATE_FREQUENCY = 4000.0f; // (in milliseconds) how often to update the meteors falling
+float lastTimeShot = 0;
 
 int gemX, gemY;				// where gemX and gemY are the coordinates of the gem in the 2D meteor array
 int GEM_SCORE = 50 * level; // score for obtaining a gem
@@ -183,8 +184,17 @@ void Update(float deltaTime)
 
 		if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 		{
-			shoot(player, allMeteors);
-			App::PlaySound(".\\TestData\\Test.wav");
+			// adds a delay to shooting frequency
+			if (totalTime - lastTimeShot > 1.0f)
+			{
+				lastTimeShot = totalTime;
+				shoot(player, allMeteors);
+				App::PlaySound(".\\TestData\\Test.wav");
+			}
+			else
+			{
+				App::PlaySound(".\\TestData\\empty.wav");
+			}
 		}
 
 		// if shoot key is pressed
